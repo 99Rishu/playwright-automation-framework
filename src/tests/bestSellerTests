@@ -1,0 +1,25 @@
+import { test, expect } from '@playwright/test';
+import { config } from '../../src/config/config';
+import { HomePage } from '../../src/pages/homePage';
+import { SearchPage } from '../../src/pages/searchPage';
+import { ProductPage } from '../../src/pages/productPage';
+
+test('Ebay wallet search and best seller section validation', async ({ page }) => {
+  const homePage = new HomePage(page);
+  const searchPage = new SearchPage(page);
+  const productPage = new ProductPage(page);
+
+  // Step 1: Go to eBay
+  await homePage.goto(config.baseUrl);
+
+  // Step 2: Search for "Wallets"
+  await homePage.searchFor('Wallets');
+
+  // Step 3: Click on the first item in results
+  await searchPage.clickFirstResult();
+
+  // Step 4: Wait for product page to load and validate best seller section
+  await expect(productPage.bestSellerSection).toBeVisible();
+
+  // Add more assertions as per your test cases
+});
