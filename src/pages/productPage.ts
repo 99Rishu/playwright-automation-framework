@@ -2,7 +2,7 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class ProductPage extends BasePage {
-  // Updated eBay product page locators for June 2025
+
   readonly productTitle: Locator = this.page.locator(
     'h1[id="x-item-title-label"], h1.x-item-title__mainTitle, h1[data-testid="x-item-title-label"], .x-item-title .x-item-title__mainTitle'
   );
@@ -11,7 +11,7 @@ export class ProductPage extends BasePage {
     '.x-price-primary .x-price-approx__price, .display-price, .x-price-primary, .notranslate'
   );
   
-  // Related/Similar products section - Updated selectors for June 2025
+ 
   readonly relatedItemsSection: Locator = this.page.locator(
     '[data-testid="related-items"], .similar-items, .related-items, section[aria-label*="Related"], section[aria-label*="Best"], .lstg-also-rec'
   );
@@ -20,7 +20,7 @@ export class ProductPage extends BasePage {
     '.similar-items .s-item, .related-items .s-item, [data-testid="related-items"] .s-item, .lstg-also-rec .s-item, .similar-items .item'
   );
 
-  // Alternative selectors if main ones don't work
+ 
   readonly alternativeRelatedSection: Locator = this.page.locator(
     '.x-refine__main__list, .ebay-related-items, .w2b-sme, .vim-similar-items'
   );
@@ -56,8 +56,7 @@ export class ProductPage extends BasePage {
   }
 
   async getBestSellerItemsCount(): Promise<number> {
-    try {
-      // Try multiple selectors for related items
+    try 
       const selectors = [
         '.similar-items .s-item',
         '.related-items .s-item', 
