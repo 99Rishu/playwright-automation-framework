@@ -54,7 +54,7 @@ Comprehensive reporting: HTML, JSON, and JUnit reports.
 
 
 
-📝 Code Example
+Code Example
 typescript
 // Example test case
 test('Should navigate to first wallet product', async () => {
@@ -64,7 +64,7 @@ test('Should navigate to first wallet product', async () => {
   expect(await productPage.getProductTitle()).toBeTruthy();
 });
 
-🤝 Contribute
+Contribute
 Feel free to fork, open issues, or submit pull requests. Contributions are welcome!
 
 
