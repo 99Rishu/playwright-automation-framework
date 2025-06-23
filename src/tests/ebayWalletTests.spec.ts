@@ -103,7 +103,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           expect(title).not.toContain('null');
           console.log(`   ${index + 1}. ${title.substring(0, 45)}...`);
         });
-        console.log(`✅ All ${titles.length} product titles are valid`);
+        console.log(`All ${titles.length} product titles are valid`);
       }
     });
 
@@ -117,7 +117,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           expect(typeof price).toBe('number');
           console.log(`   Product ${index + 1}: $${price}`);
         });
-        console.log(`✅ All ${prices.length} product prices are valid`);
+        console.log(`All ${prices.length} product prices are valid`);
       }
     });
 
@@ -137,7 +137,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         );
         
         const relevanceRatio = relevantProducts.length / titles.length;
-        console.log(`✅ Category relevance: ${relevantProducts.length}/${titles.length} (${(relevanceRatio * 100).toFixed(1)}%)`);
+        console.log(`Category relevance: ${relevantProducts.length}/${titles.length} (${(relevanceRatio * 100).toFixed(1)}%)`);
         
         // At least 20% should be category relevant
         expect(relevanceRatio).toBeGreaterThan(0.15);
@@ -158,8 +158,8 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           price >= priceRange.min && price <= priceRange.max
         );
         
-        console.log(`✅ Price range analysis: ${pricesInRange.length}/${relatedPrices.length} products in range`);
-        console.log(`✅ Range: $${priceRange.min.toFixed(2)} - $${priceRange.max.toFixed(2)}`);
+        console.log(`Price range analysis: ${pricesInRange.length}/${relatedPrices.length} products in range`);
+        console.log(` Range: $${priceRange.min.toFixed(2)} - $${priceRange.max.toFixed(2)}`);
         
         // At least 50% should be in reasonable price range
         expect(pricesInRange.length / relatedPrices.length).toBeGreaterThanOrEqual(0.3);
@@ -178,7 +178,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(relatedCount).toBeGreaterThanOrEqual(0);
       expect(relatedCount).toBeLessThanOrEqual(6);
       
-      console.log(`✅ Mobile compatibility: Title loaded, ${relatedCount} related products`);
+      console.log(` Mobile compatibility: Title loaded, ${relatedCount} related products`);
       
       // Reset to desktop
       await page.setViewportSize({ width: 1280, height: 720 });
@@ -195,7 +195,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(productTitle).toBeTruthy();
       expect(relatedCount).toBeGreaterThanOrEqual(0);
       
-      console.log(`✅ Tablet compatibility: Title loaded, ${relatedCount} related products`);
+      console.log(`Tablet compatibility: Title loaded, ${relatedCount} related products`);
       
       // Reset to desktop
       await page.setViewportSize({ width: 1280, height: 720 });
@@ -213,7 +213,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       await homePage.searchFor('xyzinvalidproduct123456', config.testData.category);
       
       const resultsCount = await searchPage.getResultsCount();
-      console.log(`✅ Invalid search results: ${resultsCount}`);
+      console.log(`Invalid search results: ${resultsCount}`);
       
       // Should either return 0 results or handle gracefully
       expect(resultsCount).toBeGreaterThanOrEqual(0);
@@ -227,10 +227,9 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         // If search goes through, check results
         const resultsCount = await searchPage.getResultsCount();
         expect(resultsCount).toBeGreaterThanOrEqual(0);
-        console.log(`✅ Empty search handled gracefully: ${resultsCount} results`);
+        console.log(`Empty search handled gracefully: ${resultsCount} results`);
       } catch (error) {
         // If search is prevented, that's also acceptable
-        console.log('✅ Empty search prevented as expected');
         expect(true).toBe(true);
       }
     });
@@ -245,9 +244,9 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           await homePage.searchFor(searchTerm, config.testData.category);
           const resultsCount = await searchPage.getResultsCount();
           expect(resultsCount).toBeGreaterThanOrEqual(0);
-          console.log(`✅ Special character search "${searchTerm}": ${resultsCount} results`);
+          console.log(`Special character search "${searchTerm}": ${resultsCount} results`);
         } catch (error) {
-          console.log(`✅ Special character search "${searchTerm}" handled gracefully`);
+          console.log(`Special character search "${searchTerm}" handled gracefully`);
         }
       }
     });
@@ -261,9 +260,9 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         await homePage.searchFor(longSearch, config.testData.category);
         const resultsCount = await searchPage.getResultsCount();
         expect(resultsCount).toBeGreaterThanOrEqual(0);
-        console.log(`✅ Long search query handled: ${resultsCount} results`);
+        console.log(` Long search query handled: ${resultsCount} results`);
       } catch (error) {
-        console.log('✅ Long search query handled gracefully');
+        console.log(' Long search query handled gracefully');
         expect(true).toBe(true);
       }
     });
@@ -283,9 +282,9 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         await page.reload({ timeout: 20000 });
         const productTitle = await productPage.getProductTitle();
         expect(productTitle).toBeTruthy();
-        console.log('✅ Slow network handled gracefully');
+        console.log('Slow network handled gracefully');
       } catch (error) {
-        console.log('✅ Network timeout handled as expected');
+        console.log('Network timeout handled as expected');
         expect(true).toBe(true);
       }
       
@@ -307,7 +306,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(relatedCount).toBeGreaterThanOrEqual(0);
       expect(typeof hasRelatedSection).toBe('boolean');
       
-      console.log(`✅ Missing related products handled: count=${relatedCount}, section=${hasRelatedSection}`);
+      console.log(`Missing related products handled: count=${relatedCount}, section=${hasRelatedSection}`);
     });
 
     test('TC19: Should handle invalid product URL access', async () => {
@@ -324,11 +323,11 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           const currentUrl = page.url();
           const pageTitle = await page.title();
           
-          console.log(`✅ Invalid URL handled: ${url} -> ${pageTitle}`);
+          console.log(`Invalid URL handled: ${url} -> ${pageTitle}`);
           expect(currentUrl).toBeTruthy();
           expect(pageTitle).toBeTruthy();
         } catch (error) {
-          console.log(`✅ Invalid URL properly rejected: ${url}`);
+          console.log(`Invalid URL properly rejected: ${url}`);
           expect(true).toBe(true);
         }
       }
@@ -353,9 +352,9 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         expect(bodyContent.length).toBeGreaterThan(100);
 }
         
-        console.log('✅ No-JavaScript scenario handled gracefully');
+        console.log('No-JavaScript scenario handled gracefully');
       } catch (error) {
-        console.log('✅ JavaScript dependency handled as expected');
+        console.log('JavaScript dependency handled as expected');
         expect(true).toBe(true);
       }
     });
@@ -374,9 +373,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
         await searchPage.clickFirstResult();
         const productPrice = await productPage.getProductPrice();
         const relatedPrices = await productPage.getBestSellerProductPrices();
-        
-        console.log(`✅ High-end product price: $${productPrice}`);
-        console.log(`✅ Related prices count: ${relatedPrices.length}`);
+    
         
         expect(productPrice).toBeGreaterThanOrEqual(0);
         if (relatedPrices.length > 0) {
@@ -385,7 +382,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
           });
         }
       } catch (error) {
-        console.log('✅ High-end product search handled gracefully');
+        console.log('High-end product search handled gracefully');
       }
     });
 
@@ -399,8 +396,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       
       const isLoaded = await homePage.isLoaded();
       expect(typeof isLoaded).toBe('boolean');
-      
-      console.log('✅ Page refresh during loading handled');
+    
     });
 
     test('TC23: Should handle multiple rapid clicks', async () => {
@@ -420,7 +416,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       const resultsCount = await searchPage.getResultsCount();
       expect(resultsCount).toBeGreaterThanOrEqual(0);
       
-      console.log('✅ Multiple rapid clicks handled gracefully');
+      
     });
 
     test('TC24: Should maintain session across page navigation', async () => {
@@ -434,7 +430,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       await page.waitForLoadState();
       
       const finalUrl = page.url();
-      console.log(`✅ Navigation maintained: ${initialUrl} -> ${finalUrl}`);
+      console.log(`Navigation maintained: ${initialUrl} -> ${finalUrl}`);
       
       expect(finalUrl).toBeTruthy();
     });
@@ -447,7 +443,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       await productPage.getProductTitle();
       
       const loadTime = Date.now() - startTime;
-      console.log(`✅ Page load time: ${loadTime}ms`);
+      console.log(`Page load time: ${loadTime}ms`);
       
       // Should load within 30 seconds
       expect(loadTime).toBeLessThan(30000);
@@ -475,11 +471,6 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(relatedCount).toBeGreaterThanOrEqual(0);
       expect(relatedCount).toBeLessThanOrEqual(6);
       
-      console.log('✅ Complete end-to-end workflow successful');
-      console.log(`📊 Final Results Summary:`);
-      console.log(`   - Search Results: ${resultsCount}`);
-      console.log(`   - Product: ${productTitle.substring(0, 40)}...`);
-      console.log(`   - Related Products: ${relatedCount}`);
     });
   });
 });
