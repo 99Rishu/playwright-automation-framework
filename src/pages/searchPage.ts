@@ -2,7 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class SearchPage extends BasePage {
-  // Updated selectors for June 2025
+
   readonly searchResults: Locator;
   readonly firstResultLink: Locator;
   readonly resultsCount: Locator;
@@ -53,9 +53,7 @@ export class SearchPage extends BasePage {
     return match ? parseInt(match[0], 10) : 0;
   }
 
-  /**
-   * Returns an array of Locators for all result items on the page.
-   */
+ 
   async getResultItems(): Promise<Locator[]> {
     const count = await this.searchResults.count();
     const items: Locator[] = [];
