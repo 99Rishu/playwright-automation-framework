@@ -3,7 +3,6 @@ import { BasePage } from './basePage';
 
 export class HomePage extends BasePage {
   readonly searchInput: Locator = this.page.locator('#gh-ac');
-  // Updated locator for June 2025
   readonly searchButton: Locator = this.page.locator('button[type="submit"]');
   readonly categoryDropdown: Locator = this.page.locator('#gh-cat');
   readonly logo: Locator = this.page.locator('#gh-logo');
@@ -30,7 +29,7 @@ export class HomePage extends BasePage {
         }
       }
 
-      // Use the updated, robust locator for the search button
+      
       await this.searchButton.waitFor({ state: 'visible', timeout: 10000 });
       await expect(this.searchButton).toBeEnabled({ timeout: 10000 });
       await this.searchButton.click();
