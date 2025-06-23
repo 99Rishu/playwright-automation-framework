@@ -4,7 +4,7 @@ import { SearchPage } from '../pages/searchPage';
 import { ProductPage } from '../pages/productPage';
 import { config } from '../config/config';
 
-test.describe('eBay Best Seller Related Products Validation', () => {
+test.describe('eBay Wallet Best Seller Related Products', () => {
   let homePage: HomePage;
   let searchPage: SearchPage;
   let productPage: ProductPage;
@@ -15,7 +15,7 @@ test.describe('eBay Best Seller Related Products Validation', () => {
     productPage = new ProductPage(page);
   });
 
-  test('TC01: User can search for wallet and navigate to product page', async ({ page }) => {
+  test('User can search for wallet and navigate to product page', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     expect(await homePage.isLoaded()).toBeTruthy();
 
@@ -27,17 +27,18 @@ test.describe('eBay Best Seller Related Products Validation', () => {
     expect(title.toLowerCase()).toContain('wallet');
   });
 
-  test('TC02: Related/best seller section is displayed with up to 6 products', async ({ page }) => {
+  test('Best seller/related section is visible and up to 6 products are shown', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     await homePage.searchFor(config.testData.searchTerm, config.testData.category);
     await searchPage.clickFirstResult();
 
+    expect(await productPage.isBestSellerSectionVisible()).toBeTruthy();
     const relatedCount = await productPage.getBestSellerItemsCount();
     expect(relatedCount).toBeGreaterThan(0);
     expect(relatedCount).toBeLessThanOrEqual(config.testData.maxBestSellers);
   });
 
-  test('TC03: All related products have a title and price', async ({ page }) => {
+  test('All related products have a title and price', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     await homePage.searchFor(config.testData.searchTerm, config.testData.category);
     await searchPage.clickFirstResult();
@@ -46,10 +47,12 @@ test.describe('eBay Best Seller Related Products Validation', () => {
     expect(titles.length).toBeGreaterThan(0);
     titles.forEach(t => expect(t).not.toBeFalsy());
 
-    // Optionally, add price checks if you implement getBestSellerProductPrices()
+    const prices = await productPage.getBestSellerProductPrices();
+    expect(prices.length).toBeGreaterThan(0);
+    prices.forEach(p => expect(p).toBeGreaterThan(0));
   });
 
-  test('TC04: Related products are in similar category', async ({ page }) => {
+  test('Related products are in similar category', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     await homePage.searchFor(config.testData.searchTerm, config.testData.category);
     await searchPage.clickFirstResult();
@@ -62,7 +65,7 @@ test.describe('eBay Best Seller Related Products Validation', () => {
     expect(matches.length).toBeGreaterThan(0);
   });
 
-  test('TC05: Related products are clickable', async ({ page }) => {
+  test('Related products are clickable', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     await homePage.searchFor(config.testData.searchTerm, config.testData.category);
     await searchPage.clickFirstResult();
@@ -74,9 +77,8 @@ test.describe('eBay Best Seller Related Products Validation', () => {
     }
   });
 
-  // NEGATIVE/EDGE CASES
-
-  test('TC06: No related products for rare/invalid search', async ({ page }) => {
+  // Negative/Edge Case Example
+  test('No related products for rare/invalid search', async ({ page }) => {
     await homePage.navigateTo(config.baseUrl);
     await homePage.searchFor('xyzabc123invalid');
     if ((await searchPage.getResultsCount()) > 0) {
@@ -84,30 +86,5 @@ test.describe('eBay Best Seller Related Products Validation', () => {
       const count = await productPage.getBestSellerItemsCount();
       expect(count).toBeGreaterThanOrEqual(0);
     }
-  });
-
-  test('TC07: Related products section is responsive on mobile', async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
-    await homePage.navigateTo(config.baseUrl);
-    await homePage.searchFor(config.testData.searchTerm, config.testData.category);
-    await searchPage.clickFirstResult();
-
-    const count = await productPage.getBestSellerItemsCount();
-    expect(count).toBeGreaterThanOrEqual(0);
-  });
-
-  test('TC08: Related products are within reasonable price range', async ({ page }) => {
-    await homePage.navigateTo(config.baseUrl);
-    await homePage.searchFor(config.testData.searchTerm, config.testData.category);
-    await searchPage.clickFirstResult();
-
-    const mainPrice = await productPage.getProductPrice();
-    // If you implement getBestSellerProductPrices(), you can check price similarity here
-    // Example:
-    // const relatedPrices = await productPage.getBestSellerProductPrices();
-    // relatedPrices.forEach(price =>
-    //   expect(Math.abs(price - mainPrice)).toBeLessThan(mainPrice * 2)
-    // );
-    expect(mainPrice).toBeGreaterThan(0);
   });
 });

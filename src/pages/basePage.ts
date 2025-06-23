@@ -1,13 +1,13 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 
-export default class BasePage {
-  readonly page: Page;
+export abstract class BasePage {
+  constructor(protected readonly page: Page) {}
 
-  constructor(page: Page) {
-    this.page = page;
-  }
-
-  async navigateTo(url: string) {
-    await this.page.goto(url);
+  async navigateTo(url: string, timeout = 30000) {
+    await this.page.goto(url, { 
+      waitUntil: 'domcontentloaded',
+      timeout 
+    });
+    await this.page.waitForLoadState('networkidle');
   }
 }
