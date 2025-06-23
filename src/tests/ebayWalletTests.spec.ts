@@ -38,7 +38,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       await homePage.navigateTo(config.baseUrl);
       const isHomeLoaded = await homePage.isLoaded();
       expect(isHomeLoaded).toBe(true);
-      console.log('✅ eBay homepage loaded successfully');
+      console.log('eBay homepage loaded successfully');
     });
 
     test('TC02: Should perform valid wallet search and return results', async () => {
@@ -49,7 +49,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       
       const resultsCount = await searchPage.getResultsCount();
       expect(resultsCount).toBeGreaterThan(0);
-      console.log(`✅ Found ${resultsCount} wallet products`);
+      console.log('Found ${resultsCount} wallet products`);
     });
 
     test('TC03: Should navigate to first wallet product successfully', async () => {
@@ -59,7 +59,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       const productTitle = await productPage.getProductTitle();
       expect(productTitle).toBeTruthy();
       expect(productTitle.toLowerCase()).toContain('wallet');
-      console.log(`✅ Product loaded: ${productTitle.substring(0, 50)}...`);
+      console.log(`Product loaded: ${productTitle.substring(0, 50)}...`);
     });
 
     test('TC04: Should display valid product title and price', async () => {
@@ -71,13 +71,13 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(productPrice).toBeGreaterThan(0);
       expect(productPrice).toBeLessThan(10000); // Reasonable upper limit
       
-      console.log(`✅ Product: ${productTitle.substring(0, 40)}...`);
-      console.log(`✅ Price: $${productPrice}`);
+      console.log(`Product: ${productTitle.substring(0, 40)}...`);
+      console.log(`Price: $${productPrice}`);
     });
 
     test('TC05: Should display related products section', async () => {
       const hasRelatedSection = await productPage.isBestSellerSectionVisible();
-      console.log(`✅ Related products section visible: ${hasRelatedSection}`);
+      console.log(`Related products section visible: ${hasRelatedSection}`);
       
       // Related section should exist (even if empty)
       expect(typeof hasRelatedSection).toBe('boolean');
@@ -89,7 +89,7 @@ test.describe('eBay Wallet Best Sellers - Complete Test Suite', () => {
       expect(relatedCount).toBeGreaterThanOrEqual(0);
       expect(relatedCount).toBeLessThanOrEqual(6);
       
-      console.log(`✅ Related products count: ${relatedCount} (within limit of 6)`);
+      console.log(` Related products count: ${relatedCount} (within limit of 6)`);
     });
 
     test('TC07: Should display valid titles for related products', async () => {
