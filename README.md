@@ -36,7 +36,7 @@ Design Pattern: Page Object Model (POM)
 
 Reporting: Playwright HTML Report
 
-📊 Test Coverage
+Test Coverage
 Positive test cases: Search, product details, related products, mobile/tablet responsiveness, performance
 
 Negative test cases: Invalid/empty/special character/long search, network interruption, missing related products, invalid URL, JavaScript disabled
