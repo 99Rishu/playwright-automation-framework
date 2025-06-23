@@ -1,2 +1,12 @@
-# playwright-automation-framework
-Test Automation Framework from Playwright using Type script and this framework is to automate ebay, item selection
+# eBay Wallet Best Sellers Automation Framework
+
+A comprehensive Playwright TypeScript automation framework for testing eBay's wallet product pages and best seller recommendations.
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn package manager
+
+## Installation
+
+1. Clone the repository:

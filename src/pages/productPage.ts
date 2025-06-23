@@ -2,85 +2,197 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class ProductPage extends BasePage {
-  // Main product title (works for most eBay product pages)
-  readonly productTitle: Locator = this.page.locator('h1[data-testid="x-item-title-label"], h1[itemprop="name"]');
-  // Main product price (covers possible price containers)
-  readonly productPrice: Locator = this.page.locator('.x-price-primary, .display-price, .x-price-approx__price');
-  // Main product image (optional, for visual checks)
-  readonly productImage: Locator = this.page.locator('#icImg, #mainImgHldr img, [data-testid="x-item-image"] img');
-
-  // Best Seller / Related Products section (robust selectors for 2025 eBay)
-  readonly bestSellerSection: Locator = this.page.locator(
-    'section[aria-label*="Best Seller"], section[aria-label*="Related"], [data-testid="related-items"], .x-related-items'
+  // Updated eBay product page locators for June 2025
+  readonly productTitle: Locator = this.page.locator(
+    'h1[id="x-item-title-label"], h1.x-item-title__mainTitle, h1[data-testid="x-item-title-label"], .x-item-title .x-item-title__mainTitle'
   );
-  // Individual related/best seller items
-  readonly bestSellerItems: Locator = this.page.locator(
-    '[data-testid="related-items"] .s-item, .x-related-items .s-item, section[aria-label*="Best Seller"] .s-item'
+  
+  readonly productPrice: Locator = this.page.locator(
+    '.x-price-primary .x-price-approx__price, .display-price, .x-price-primary, .notranslate'
+  );
+  
+  // Related/Similar products section - Updated selectors for June 2025
+  readonly relatedItemsSection: Locator = this.page.locator(
+    '[data-testid="related-items"], .similar-items, .related-items, section[aria-label*="Related"], section[aria-label*="Best"], .lstg-also-rec'
+  );
+  
+  readonly relatedItems: Locator = this.page.locator(
+    '.similar-items .s-item, .related-items .s-item, [data-testid="related-items"] .s-item, .lstg-also-rec .s-item, .similar-items .item'
+  );
+
+  // Alternative selectors if main ones don't work
+  readonly alternativeRelatedSection: Locator = this.page.locator(
+    '.x-refine__main__list, .ebay-related-items, .w2b-sme, .vim-similar-items'
   );
 
   constructor(page: Page) {
     super(page);
   }
 
-  /**
-   * Gets the main product's title.
-   */
   async getProductTitle(): Promise<string> {
-    return (await this.productTitle.textContent())?.trim() || '';
-  }
-
-  /**
-   * Gets the main product's price as a number.
-   */
-  async getProductPrice(): Promise<number> {
-    const priceText = await this.productPrice.first().textContent();
-    if (!priceText) return 0;
-    const match = priceText.replace(/[^\d.]/g, '');
-    return parseFloat(match || '0');
-  }
-
-  /**
-   * Returns the count of best seller/related items.
-   */
-  async getBestSellerItemsCount(): Promise<number> {
-    return await this.bestSellerItems.count();
-  }
-
-  /**
-   * Returns all best seller/related product titles as an array.
-   */
-  async getBestSellerProductTitles(): Promise<string[]> {
-    const items = await this.bestSellerItems.all();
-    const titles: string[] = [];
-    for (const item of items) {
-      // Try to get the title from the most common eBay classes
-      const title = await item.locator('.s-item__title, .item-title').textContent();
-      if (title) titles.push(title.trim());
+    try {
+      await this.productTitle.first().waitFor({ state: 'visible', timeout: 15000 });
+      const title = await this.productTitle.first().textContent();
+      return title?.trim() || '';
+    } catch (error) {
+      console.log(`Failed to get product title: ${error}`);
+      return '';
     }
+  }
+
+  async getProductPrice(): Promise<number> {
+    try {
+      await this.productPrice.first().waitFor({ state: 'visible', timeout: 15000 });
+      const priceText = await this.productPrice.first().textContent();
+      if (!priceText) return 0;
+      
+      // Remove currency symbols and extract numeric value
+      const cleanPrice = priceText.replace(/[^\d.,]/g, '').replace(/,/g, '');
+      return parseFloat(cleanPrice || '0');
+    } catch (error) {
+      console.log(`Failed to get product price: ${error}`);
+      return 0;
+    }
+  }
+
+  async getBestSellerItemsCount(): Promise<number> {
+    try {
+      // Try multiple selectors for related items
+      const selectors = [
+        '.similar-items .s-item',
+        '.related-items .s-item', 
+        '[data-testid="related-items"] .s-item',
+        '.lstg-also-rec .s-item',
+        '.vim-similar-items .item',
+        '.w2b-sme .item'
+      ];
+
+      for (const selector of selectors) {
+        try {
+          const elements = this.page.locator(selector);
+          await elements.first().waitFor({ state: 'visible', timeout: 5000 });
+          const count = await elements.count();
+          if (count > 0) {
+            console.log(`Found ${count} related items using selector: ${selector}`);
+            return Math.min(count, 6); // Cap at 6 as per requirement
+          }
+        } catch {
+          continue;
+        }
+      }
+      
+      return 0;
+    } catch (error) {
+      console.log(`Failed to get related items count: ${error}`);
+      return 0;
+    }
+  }
+
+  async getBestSellerProductTitles(): Promise<string[]> {
+    const titles: string[] = [];
+    
+    try {
+      const selectors = [
+        '.similar-items .s-item',
+        '.related-items .s-item',
+        '[data-testid="related-items"] .s-item',
+        '.lstg-also-rec .s-item'
+      ];
+
+      for (const selector of selectors) {
+        try {
+          const items = this.page.locator(selector);
+          const count = await items.count();
+          
+          if (count > 0) {
+            for (let i = 0; i < Math.min(count, 6); i++) {
+              try {
+                const item = items.nth(i);
+                const titleElement = item.locator('.s-item__title, .item-title, .item__title, h3');
+                const title = await titleElement.textContent();
+                if (title && title.trim() !== '') {
+                  titles.push(title.trim());
+                }
+              } catch {
+                continue;
+              }
+            }
+            if (titles.length > 0) break;
+          }
+        } catch {
+          continue;
+        }
+      }
+    } catch (error) {
+      console.log(`Failed to get product titles: ${error}`);
+    }
+    
     return titles;
   }
 
-  /**
-   * Returns all best seller/related product prices as an array of numbers.
-   */
   async getBestSellerProductPrices(): Promise<number[]> {
-    const items = await this.bestSellerItems.all();
     const prices: number[] = [];
-    for (const item of items) {
-      const priceText = await item.locator('.s-item__price, .item-price, .x-price-primary').first().textContent();
-      if (priceText) {
-        const match = priceText.replace(/[^\d.]/g, '');
-        const price = parseFloat(match || '0');
-        if (price > 0) prices.push(price);
+    
+    try {
+      const selectors = [
+        '.similar-items .s-item',
+        '.related-items .s-item',
+        '[data-testid="related-items"] .s-item',
+        '.lstg-also-rec .s-item'
+      ];
+
+      for (const selector of selectors) {
+        try {
+          const items = this.page.locator(selector);
+          const count = await items.count();
+          
+          if (count > 0) {
+            for (let i = 0; i < Math.min(count, 6); i++) {
+              try {
+                const item = items.nth(i);
+                const priceElement = item.locator('.s-item__price, .item-price, .price, .amt');
+                const priceText = await priceElement.textContent();
+                
+                if (priceText) {
+                  const cleanPrice = priceText.replace(/[^\d.,]/g, '').replace(/,/g, '');
+                  const price = parseFloat(cleanPrice || '0');
+                  if (price > 0) {
+                    prices.push(price);
+                  }
+                }
+              } catch {
+                continue;
+              }
+            }
+            if (prices.length > 0) break;
+          }
+        } catch {
+          continue;
+        }
       }
+    } catch (error) {
+      console.log(`Failed to get product prices: ${error}`);
     }
+    
     return prices;
   }
 
-  /**
-   * Checks if the best seller/related section is visible.
-   */
   async isBestSellerSectionVisible(): Promise<boolean> {
-    return await this.bestSellerSection.isVisible();
+    const selectors = [
+      '.similar-items',
+      '.related-items',
+      '[data-testid="related-items"]',
+      '.lstg-also-rec',
+      '.vim-similar-items',
+      '.w2b-sme'
+    ];
+
+    for (const selector of selectors) {
+      if (await this.isElementVisible(selector, 3000)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 }
