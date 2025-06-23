@@ -1,7 +1,7 @@
 # eBay Wallet Best Sellers Automation Framework
 A robust automation framework built with Playwright and TypeScript for testing eBay's wallet best sellers feature, covering all positive, negative, and edge cases as per the QA Skills Assessment requirements.
 
-🚀 Motivation
+ Motivation
 This framework is designed to automate the validation of eBay's wallet best sellers feature, ensuring that:
 
 Searching for wallets works correctly
@@ -12,7 +12,7 @@ Related best seller products are shown in the same category and price range
 
 All scenarios (positive, negative, edge cases) are covered
 
-🏗️ Project Structure
+ Project Structure
 src/
 ├── pages/            # Page Object Model classes
 │   ├── homePage.ts
@@ -27,7 +27,7 @@ playwright.config.ts  # Playwright configuration
 package.json          # Node.js dependencies
 
 
-🛠️ Technology & Framework
+ Technology & Framework
 Testing Framework: Playwright
 
 Language: TypeScript
@@ -43,7 +43,7 @@ Negative test cases: Invalid/empty/special character/long search, network interr
 
 Edge cases: High/low price products, page refresh, multiple rapid clicks, session maintenance
 
-🧩 Features
+ Features
 Page Object Model (POM): Clean separation of test logic and UI locators.
 
 Robust locators: Updated for eBay's June 2025 UI.
